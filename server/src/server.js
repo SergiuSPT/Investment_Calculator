@@ -10,6 +10,9 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const TWELVE_API_KEY = process.env.TWELVE_API_KEY;
 const EODHD_API_KEY = process.env.EODHD_API_KEY;
+const date = new Date().toISOString().split('T')[0];
+const yearAgo = new Date().setFullYear(new Date().getFullYear() - 1);
+const dateYearAgo = new Date(yearAgo).toISOString().split('T')[0];
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -26,7 +29,7 @@ app.use(
 app.get("/api/SP500", async (req, res) => {
     try {
         console.log("Received request for S&P 500 data");
-        const response = await axios.get(`https://api.twelvedata.com/time_series?symbol=SPY&start_date=2024-12-26&end_date=2025-12-25&interval=1month&apikey=${TWELVE_API_KEY}`);
+        const response = await axios.get(`https://api.twelvedata.com/time_series?symbol=SPY&start_date=${dateYearAgo}&end_date=${date}&interval=1month&apikey=${TWELVE_API_KEY}`);
         const data = response.data;
         return res.json(data);
     }catch (error) {
@@ -38,7 +41,7 @@ app.get("/api/SP500", async (req, res) => {
 app.get("/api/Nasdaq", async (req, res) => {
     try {
         console.log("Received request for Nasdaq data");
-        const response = await axios.get(`https://api.twelvedata.com/time_series?symbol=QQQ&start_date=2024-12-26&end_date=2025-12-25&interval=1month&apikey=${TWELVE_API_KEY}`);
+        const response = await axios.get(`https://api.twelvedata.com/time_series?symbol=QQQ&start_date=${dateYearAgo}&end_date=${date}&interval=1month&apikey=${TWELVE_API_KEY}`);
         const data = response.data;
         return res.json(data);
         
@@ -51,7 +54,7 @@ app.get("/api/Nasdaq", async (req, res) => {
 app.get("/api/FTSE_Europe", async (req, res) => {
     try {
         console.log("Received request for FTSE Europe data");
-        const response = await axios.get(`https://eodhd.com/api/eod/VGK.US?api_token=${EODHD_API_KEY}&fmt=json&from=2024-12-26&to=2025-12-25&period=m`);
+        const response = await axios.get(`https://eodhd.com/api/eod/VGK.US?api_token=${EODHD_API_KEY}&fmt=json&from=${dateYearAgo}&to=${date}&period=m`);
         const data = response.data;
         return res.json(data);
     }catch (error) {
@@ -63,7 +66,7 @@ app.get("/api/FTSE_Europe", async (req, res) => {
 app.get("/api/STOXX50", async (req, res) => {
     try {
         console.log("Received request for STOXX 50 data");
-        const response = await axios.get(`https://eodhd.com/api/eod/FEZ.US?api_token=${EODHD_API_KEY}&fmt=json&from=2024-12-26&to=2025-12-25&period=m`);
+        const response = await axios.get(`https://eodhd.com/api/eod/FEZ.US?api_token=${EODHD_API_KEY}&fmt=json&from=${dateYearAgo}&to=${date}&period=m`);
         const data = response.data;
         return res.json(data);
     }catch (error) {

@@ -1,7 +1,9 @@
 import { useState } from "react";
+import { twelveDataExtract, eodhdDataExtract, calculateAnnualReturn } from "./util/investment.js";
 import Input from "./components/Input";
 import Results from "./components/Results";
 import TabButton from "./components/TabButton";
+import CircularProgress from '@mui/material/CircularProgress';
 
 
 function App() {
@@ -13,11 +15,13 @@ function App() {
   });
 
   const [selectedFund, setSelectedFund] = useState("SP500");
+  const [isCalculatingReturn, setIsCalculatingReturn] = useState(false);
 
   const inputIsValid = userInput.duration >= 1;
 
   function handleFundChange(fund){
     setSelectedFund(fund);
+    setIsCalculatingReturn((oldState) => !oldState);
 
     fetch(`http://localhost:3000/api/${encodeURIComponent(fund)}`)
     .then(res => {
@@ -28,10 +32,27 @@ function App() {
     })
     .then(data => {
       console.log("Server response:", data);
-      // setFundData(data); ← store response in state if needed
+      let extractedValues;
+      if(fund ==="SP500" || fund === "Nasdaq"){
+        extractedValues = twelveDataExtract(data);
+      }else{
+        extractedValues = eodhdDataExtract(data);
+      }
+      return extractedValues;
+    })
+    .then(extractedValues => {
+      const [lastYearValue, thisYearValue] = extractedValues;
+      console.log("Extracted values:", lastYearValue, thisYearValue);
+      return calculateAnnualReturn(lastYearValue, thisYearValue);
+    }).then(annualReturn => {
+      console.log("Calculated annual return:", annualReturn);
+      handleChange("expectedReturn", annualReturn);
     })
     .catch(err => {
       console.error("Error fetching fund data:", err);
+    })
+    .finally(() => {
+      setIsCalculatingReturn((oldState) => !oldState);
     });
   }
 
@@ -67,8 +88,16 @@ function App() {
           </ul>
         </div>
 
-      {inputIsValid ? <Results input={userInput} /> :
-       <p className="center">Please enter a duration gretaer than zero</p>}
+      {inputIsValid ? (
+        isCalculatingReturn ? (
+          <div className="center">
+            <CircularProgress />
+          </div>
+        ) : (
+        <Results input={userInput} /> 
+      )) : (
+        <p className="center">Please enter a duration gretaer than zero</p>
+      )}
     </>
   )
 }
