@@ -90,8 +90,8 @@ function App() {
 
       {inputIsValid ? (
         isCalculatingReturn ? (
-          <div className="center">
-            <CircularProgress />
+          <div className="center pt-10">
+            <CircularProgress size={80} sx={{ color: '#76c0ae' }}/>
           </div>
         ) : (
         <Results input={userInput} /> 
