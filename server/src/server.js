@@ -21,7 +21,7 @@ app.use(express.static('public'));
 app.use(
   cors({
     origin: [ 'http://localhost:5173',
-        'https://investmentcalculator-production-ffae.up.railway.app'
+        'https://investmentcalculator-production-ccee.up.railway.app'
     ],
     methods: ['GET', 'POST'],
     credentials: true
