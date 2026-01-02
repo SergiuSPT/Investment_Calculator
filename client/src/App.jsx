@@ -23,7 +23,7 @@ function App() {
     setSelectedFund(fund);
     setIsCalculatingReturn((oldState) => !oldState);
 
-    fetch(`http://localhost:3000/api/${encodeURIComponent(fund)}`)
+    fetch(`${import.meta.env.VITE_API_URL}/api/${encodeURIComponent(fund)}`)
     .then(res => {
       if (!res.ok) {
         throw new Error("Network response was not ok");
