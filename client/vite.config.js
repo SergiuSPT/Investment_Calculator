@@ -6,5 +6,8 @@ export default defineConfig({
   plugins: [react()],
   preview: {
     allowedHosts: 'all'
+  },
+  define: {
+    __TEST__: '"VITE CONFIG LOADED"'
   }
 })
