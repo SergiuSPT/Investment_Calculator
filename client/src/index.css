@@ -112,3 +112,7 @@ body {
 .pt-10{
   padding-top: 100px;
 }
+
+.font-roboto{
+  font-family: 'Roboto Condensed', sans-serif;
+}
